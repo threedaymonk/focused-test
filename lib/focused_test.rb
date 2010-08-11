@@ -73,31 +73,18 @@ class FocusedTest
   end
 
   def run_test(content)
-    current_line = 0
-    current_method = nil
-
-    require @file_path
-    runner = nil
-    if @line_number
-      content.split("\n").each do |line|
-        break if current_line > @line_number
-        if /def +(test_[A-Za-z0-9_!?]*)/ =~ line
-          current_method = Regexp.last_match(1)
-        end
-        current_line += 1
-      end
-
-      runner = Test::Unit::AutoRunner.new(false) do |runner|
-        runner.filters << proc{|t| current_method == t.method_name }
-      end
-    else
-      runner = Test::Unit::AutoRunner.new(false)
+    run_test_unit(content, /def +(test_[A-Za-z0-9_!?]*)/) do |matches|
+      matches[1]
     end
-    runner.run
-    puts "Running '#{current_method}' in file #{@file_path}" unless current_method.nil?
   end
 
   def run_active_support(content)
+    run_test_unit(content, /test\s+['"](.*)['"]\s+do/) do |matches|
+      "test_#{matches[1].gsub(/\s+/,'_')}"
+    end
+  end
+
+  def run_test_unit(content, method_regexp, &method_translator)
     current_line = 0
     current_method = nil
 
@@ -106,8 +93,8 @@ class FocusedTest
     if @line_number
       content.split("\n").each do |line|
         break if current_line > @line_number
-        if /test\s+['"](.*)['"]\s+do/ =~ line
-          current_method = "test_#{Regexp.last_match(1).gsub(/\s+/,'_')}"
+        if matches = line.match(method_regexp)
+          current_method = yield(matches)
         end
         current_line += 1
       end
