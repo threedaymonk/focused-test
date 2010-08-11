@@ -28,6 +28,8 @@ class FocusedTest
     if content =~ /class .*Test < (.*TestCase|ActionController::IntegrationTest)/
       if content =~ /should\s+['"].*['"]\s+do/
         return proc { run_should content }
+      elsif content =~ /test\s+['"].*['"]\s+do/
+        return proc { run_active_support content }
       else
         return proc { run_test content }
       end
@@ -81,6 +83,31 @@ class FocusedTest
         break if current_line > @line_number
         if /def +(test_[A-Za-z0-9_!?]*)/ =~ line
           current_method = Regexp.last_match(1)
+        end
+        current_line += 1
+      end
+
+      runner = Test::Unit::AutoRunner.new(false) do |runner|
+        runner.filters << proc{|t| current_method == t.method_name ? true : false}
+      end
+    else
+      runner = Test::Unit::AutoRunner.new(false)
+    end
+    runner.run
+    puts "Running '#{current_method}' in file #{@file_path}" unless current_method.nil?
+  end
+
+  def run_active_support(content)
+    current_line = 0
+    current_method = nil
+
+    require @file_path
+    runner = nil
+    if @line_number
+      content.split("\n").each do |line|
+        break if current_line > @line_number
+        if /test\s+['"](.*)['"]\s+do/ =~ line
+          current_method = "test_#{Regexp.last_match(1).gsub(/\s+/,'_')}"
         end
         current_line += 1
       end

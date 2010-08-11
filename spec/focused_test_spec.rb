@@ -22,6 +22,26 @@ describe FocusedTest do
       end
     end
 
+    context "when passed in file has an activesupport test in it" do
+      before { @file = "#{dir}/fixtures/fixture_active_support_test.rb" }
+
+      context "when passed a --line" do
+        it "runs the focused test" do
+          output = run_test("-f #{@file} -l 5")
+          output.should include("active_support_test_1")
+          output.should_not include("active_support_test_2")
+        end
+      end
+
+      context "when not passed a --line" do
+        it "runs the entire test" do
+          output = run_test("-f #{@file}")
+          output.should include("active_support_test_1")
+          output.should include("active_support_test_2")
+        end
+      end
+    end
+
     context "when passed in file has a shoulda test in it" do
       before { @file = "#{dir}/fixtures/fixture_shoulda.rb" }
 
