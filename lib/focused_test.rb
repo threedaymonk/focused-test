@@ -88,7 +88,7 @@ class FocusedTest
       end
 
       runner = Test::Unit::AutoRunner.new(false) do |runner|
-        runner.filters << proc{|t| current_method == t.method_name ? true : false}
+        runner.filters << proc{|t| current_method == t.method_name }
       end
     else
       runner = Test::Unit::AutoRunner.new(false)
@@ -113,7 +113,7 @@ class FocusedTest
       end
 
       runner = Test::Unit::AutoRunner.new(false) do |runner|
-        runner.filters << proc{|t| current_method == t.method_name ? true : false}
+        runner.filters << proc{|t| current_method == t.method_name }
       end
     else
       runner = Test::Unit::AutoRunner.new(false)
