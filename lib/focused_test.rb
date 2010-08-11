@@ -13,7 +13,7 @@ class FocusedTest
   end
 
   def run
-    strategy_for_file.call    
+    strategy_for_file.call
   end
 
   private
@@ -23,7 +23,7 @@ class FocusedTest
     elsif @file_path =~ /spec\.rb/
       return proc { run_example }
     end
-    
+
     content = IO.read(@file_path)
     if content =~ /class .*Test < (.*TestCase|ActionController::IntegrationTest)/
       if content =~ /should\s+['"].*['"]\s+do/
@@ -43,7 +43,7 @@ class FocusedTest
     @format = nil
     @rspec_version = ""
     @show_backtrace = false
-    
+
     options = OptionParser.new do |o|
       o.on('-f', '--filepath=FILEPATH', String, "File to run test on") do |path|
         @file_path = path
@@ -52,7 +52,7 @@ class FocusedTest
       o.on('-l', '--linenumber=LINENUMBER', Integer, "Line of the test") do |line|
         @line_number = line
       end
-      
+
       o.on('-r', '--rspec-version=VERSION', String, "Version of Rspec to Run") do |version|
         @rspec_version = "_#{version}_"
       end
@@ -64,7 +64,7 @@ class FocusedTest
       o.on('-X', '--drb', String, "Run examples via DRb.") do
         @drb = true
       end
-      
+
       o.on('-F', '--format=FORMAT', String, "Output formatter for rspec or cucumber") do |format|
         @format = format
       end
@@ -117,7 +117,7 @@ class FocusedTest
     require @file_path
 
     should, context, description = '', '', ''
-    
+
     content   = content.split("\n")
     lines     = content[0...@line_number].reverse
     context   = lines.find { |line| line =~ /^\s*context\b/ }
@@ -157,7 +157,7 @@ class FocusedTest
     cmd << " --format #{@format ? @format : 'progress'}"
     system cmd
   end
-  
+
   def run_feature
     cmd = ""
     ["script/cucumber", `which cucumber`.strip, "/usr/bin/cucumber"].each do |cucumber_executable|
@@ -166,12 +166,12 @@ class FocusedTest
         break
       end
     end
-    
+
     cmd << " #{@file_path}"
     cmd << ":#{@line_number}" if @line_number
     cmd << " --format #{@format ? @format : 'pretty'}"
 
-    system cmd  
+    system cmd
   end
 
   def parse_from_quotes(name)
