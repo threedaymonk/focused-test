@@ -94,7 +94,7 @@ describe FocusedTest do
           output.should include("does something 2")
         end
       end
-      
+
       context 'format' do
         context 'when passed "--format documentation"' do
           it 'should use the documentation formatter' do
@@ -103,7 +103,7 @@ describe FocusedTest do
             output.should_not include(".does something 2")
           end
         end
-        
+
         context 'when not passed a format' do
           it 'should default to the progress formater' do
             output = run_test("-f #{@file}")
@@ -114,22 +114,22 @@ describe FocusedTest do
       end
     end
 
-    context "when passed a filepath that ends with .feature" do          
+    context "when passed a filepath that ends with .feature" do
       before do
         features_path = File.expand_path("#{dir}/fixtures/features/")
         @file = "#{features_path}/focused-test.feature"
       end
-      
+
       context "when passed a --line" do
         it 'runs the focused scenario' do
-          output = run_test("-f #{@file} -l 6") 
+          output = run_test("-f #{@file} -l 6")
           output.should include("does something 1")
           output.should_not include("does something 2")
           output.should include("1 scenario (1 passed)")
           output.should include("1 step (1 passed)")
         end
       end
-      
+
       context "when not passed a --line" do
         it "runs the entire feature file" do
           output = run_test("-f #{@file}")
@@ -139,7 +139,7 @@ describe FocusedTest do
           output.should include("2 steps (2 passed)")
         end
       end
-      
+
       context "format" do
         context 'when passed "--format progress"' do
           it 'should use the progress formatter' do
@@ -149,7 +149,7 @@ describe FocusedTest do
             output.should include(".does something 2")
           end
         end
-        
+
         context 'when not passed a format' do
           it 'should default to the pretty formater' do
             output = run_test("-f #{@file}")
@@ -160,7 +160,7 @@ describe FocusedTest do
         end
       end
     end
-    
+
     def dir
       File.dirname(__FILE__)
     end
