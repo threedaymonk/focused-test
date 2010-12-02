@@ -96,10 +96,10 @@ describe FocusedTest do
       end
       
       context 'format' do
-        context 'when passed "--format specdoc"' do
-          it 'should use the specdoc formatter' do
-            output = run_test("-f #{@file} --format specdoc")
-            output.should include("does something 1\n- does something 1")
+        context 'when passed "--format documentation"' do
+          it 'should use the documentation formatter' do
+            output = run_test("-f #{@file} --format documentation")
+            output.should include("does something 1\n  does something 1")
             output.should_not include(".does something 2")
           end
         end
@@ -166,7 +166,7 @@ describe FocusedTest do
     end
 
     def run_test(command_line)
-      `ruby -e "require '#{dir}/../lib/focused_test'; FocusedTest.run('#{command_line.split(/\s/).join(%q[','])}')"`
+      `ruby -I"#{dir}/../lib/" -rfocused_test -e "FocusedTest.run('#{command_line.split(/\s/).join(%q[','])}')"`
     end
   end
 end

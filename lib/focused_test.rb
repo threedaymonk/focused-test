@@ -1,5 +1,6 @@
 #!/usr/local/bin/ruby
 require 'optparse'
+require 'focused_test/version'
 
 class FocusedTest
   class << self
